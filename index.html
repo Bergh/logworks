@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LOG WORKS</title>
   <style>
+    @font-face {
+      font-family: 'CourierSansMonoLL-Regular';
+      src: url('fonts/CourierSansMonoLLWeb-Regular.woff2') format('woff2'),
+           url('fonts/CourierSansMonoLLWeb-Regular.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
     body {
       background-color: #fff;
       margin: 0;
@@ -15,14 +22,6 @@
       height: 100vh;
       box-sizing: border-box;
     }
-
-@font-face {
-  font-family: 'CourierSansMonoLL-Regular';
-  src: url('CourierSansMonoLLWeb-Regular.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
-    
     pre {
       font-family: 'CourierSansMonoLL-Regular', monospace;
       font-size: 12px;
@@ -33,18 +32,20 @@
       white-space: pre;
       overflow-x: auto;
     }
-
     .hidden {
       visibility: hidden;
     }
-
     .visible {
       visibility: visible;
+    }
+    #real-pre {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <pre id="text-box">
+  <!-- Animated pre (no links, for animation only) -->
+  <pre id="animated-pre">
 –––––––––––––––––––––––––––––––––
 •    LOG WORKS  •               •
      Temporary website
@@ -70,10 +71,63 @@
                    
 •               •               •
 –––––––––––––––––––––––––––––––––
+•    SOLE PROPRI•ETOR           •
+     Rickard Jakobsson (b.1987)
+
+•               •               •
+
+
+•               •               •
+–––––––––––––––––––––––––––––––––
 •    GET IN TOUC•H              •
-     <a href="mailto:rickard@log.works">E-mail</a>
-     <a href="http://instagram.com/logsadrift">Instagram</a>
-•    <a href="tel: +46735411934">Phone</a>      •               •
+     E-mail
+     Instagram
+•    Phone      •               •
+                           
+
+•               •               •
+–––––––––––––––––––––––––––––––––
+  </pre>
+
+  <!-- Real pre (HTML markup with live links, hidden initially) -->
+  <pre id="real-pre">
+–––––––––––––––––––––––––––––––––
+•    LOG WORKS  •               •
+     Temporary website
+
+•               •               •
+
+
+•               •               •
+–––––––––––––––––––––––––––––––––
+•    DESCRIPTION•               •
+     Architecture, design and
+     fabrication services
+•    based in St•ockholm        •
+              
+
+•               •               •
+–––––––––––––––––––––––––––––––––
+•    SELECTED CL•IENTS          •
+     Contem, Indian Street Food
+     & co, Jade recordings,
+•    Daily Pract•ice, Market    •
+     Art Fair, Klättermusen
+                   
+•               •               •
+–––––––––––––––––––––––––––––––––
+•    SOLE PROPRI•ETOR           •
+     Rickard Jakobsson (b.1987)
+
+•               •               •
+
+
+•               •               •
+–––––––––––––––––––––––––––––––––
+•    GET IN TOUC•H              •
+     <a href="mailto:hello@email.com">E-mail</a>
+     <a href="https://instagram.com/yourprofile" target="_blank">Instagram</a>
+•    <a href="tel:+46123456789">Phone</a>      •               •
                            
 
 •               •               •
@@ -81,22 +135,23 @@
   </pre>
 
   <script>
-    const pre = document.getElementById('text-box');
-    const text = pre.textContent;
-    pre.textContent = ''; // Clear content
+    const animatedPre = document.getElementById('animated-pre');
+    const realPre = document.getElementById('real-pre');
+    const originalText = animatedPre.textContent;
 
-    // Split into spans, each character separate
-    const chars = text.split('');
+    // Prepare animation: clear animatedPre, fill with spans per char
+    animatedPre.textContent = '';
+    const chars = originalText.split('');
     chars.forEach(char => {
       const span = document.createElement('span');
       span.textContent = char;
       span.classList.add('hidden');
-      pre.appendChild(span);
+      animatedPre.appendChild(span);
     });
 
-    const spans = pre.querySelectorAll('span');
+    const spans = animatedPre.querySelectorAll('span');
 
-    // Function to reveal spans based on character type
+    // Animation reveal functions
     function revealChars(filterFn, delayStep, startDelay = 0) {
       let delay = startDelay;
       spans.forEach(span => {
@@ -108,17 +163,17 @@
       return delay;
     }
 
-    // Step 1: Reveal "–" first
     const dashEnd = revealChars(ch => ch === '–', 15, 0);
-
-    // Step 2: Reveal "•" second
     const dotEnd = revealChars(ch => ch === '•', 100, dashEnd + 300);
+    const textEnd = revealChars(ch => ch !== '–' && ch !== '•' && ch.trim() !== '', 30, dotEnd + 300);
+    const whitespaceEnd = revealChars(ch => ch.trim() === '', 1, dotEnd + 300);
 
-    // Step 3: Reveal everything else (letters, numbers, spaces, etc.)
-    revealChars(ch => ch !== '–' && ch !== '•' && ch.trim() !== '', 30, dotEnd + 300);
-
-    // Step 4: Reveal whitespace last (to fill structure)
-    revealChars(ch => ch.trim() === '', 1, dotEnd + 300);
+    // After animating, swap in real <pre> with links (no flicker)
+    const totalDelay = Math.max(textEnd, whitespaceEnd) + 500;
+    setTimeout(() => {
+      animatedPre.style.display = 'none';
+      realPre.style.display = '';
+    }, totalDelay);
   </script>
 </body>
 </html>
