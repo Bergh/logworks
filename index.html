@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOG WORKS</title>
+  <style>
+    body {
+      background-color: #fff;
+      margin: 0;
+      padding: 9px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+
+    pre {
+      font-family: 'CourierSansMonoLL-Regular', monospace;
+      font-size: 12px;
+      line-height: 1.4;
+      padding: 0;
+      width: calc(33ch + 18px);
+      box-sizing: content-box;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .hidden {
+      visibility: hidden;
+    }
+
+    .visible {
+      visibility: visible;
+    }
+  </style>
+</head>
+<body>
+  <pre id="text-box">
+–––––––––––––––––––––––––––––––––
+•    LOG WORKS  •               •
+     Temporary website
+
+•               •               •
+
+
+•               •               •
+–––––––––––––––––––––––––––––––––
+•    DESCRIPTION•               •
+     Architecture, design and
+     fabrication services
+•    based in St•ockholm        •
+              
+
+•               •               •
+–––––––––––––––––––––––––––––––––
+•    SELECTED CL•IENTS          •
+     Contem, Indian Street Food
+     & co, Jade recordings,
+•    Daily Pract•ice, Market    •
+     Art Fair, Klättermusen
+                   
+•               •               •
+–––––––––––––––––––––––––––––––––
+•    SOLE PROPRI•ETOR           •
+     Rickard Jakobsson (b.1987)
+
+•               •               •
+
+
+•               •               •
+–––––––––––––––––––––––––––––––––
+•    GET IN TOUC•H              •
+     E-mail
+     Instagram
+•    Phone      •               •
+                           
+
+•               •               •
+–––––––––––––––––––––––––––––––––
+  </pre>
+
+  <script>
+    const pre = document.getElementById('text-box');
+    const text = pre.textContent;
+    pre.textContent = ''; // Clear content
+
+    // Split into spans, each character separate
+    const chars = text.split('');
+    chars.forEach(char => {
+      const span = document.createElement('span');
+      span.textContent = char;
+      span.classList.add('hidden');
+      pre.appendChild(span);
+    });
+
+    const spans = pre.querySelectorAll('span');
+
+    // Function to reveal spans based on character type
+    function revealChars(filterFn, delayStep, startDelay = 0) {
+      let delay = startDelay;
+      spans.forEach(span => {
+        if (filterFn(span.textContent)) {
+          setTimeout(() => span.classList.replace('hidden', 'visible'), delay);
+          delay += delayStep;
+        }
+      });
+      return delay;
+    }
+
+    // Step 1: Reveal "–" first
+    const dashEnd = revealChars(ch => ch === '–', 15, 0);
+
+    // Step 2: Reveal "•" second
+    const dotEnd = revealChars(ch => ch === '•', 100, dashEnd + 300);
+
+    // Step 3: Reveal everything else (letters, numbers, spaces, etc.)
+    revealChars(ch => ch !== '–' && ch !== '•' && ch.trim() !== '', 30, dotEnd + 300);
+
+    // Step 4: Reveal whitespace last (to fill structure)
+    revealChars(ch => ch.trim() === '', 1, dotEnd + 300);
+  </script>
+</body>
+</html>
